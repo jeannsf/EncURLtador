@@ -26,4 +26,12 @@ export class ShortUrlService {
     }
     return urlDetails;
   }
+
+  async delete(alias: string) {
+    const urlDelete = await this.shortUrlRepository.delete(alias);
+    if (!urlDelete) {
+      throw new NotFoundException('URL not found');
+    }
+    return urlDelete;
+  }
 }

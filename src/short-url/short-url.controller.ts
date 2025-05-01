@@ -1,4 +1,12 @@
-import { Controller, Post, Body, Get, Res, Param } from '@nestjs/common';
+import {
+  Controller,
+  Post,
+  Body,
+  Get,
+  Res,
+  Param,
+  Delete,
+} from '@nestjs/common';
 import { ShortUrlService } from './short-url.service';
 import { CreateShortUrlDto } from './dto/create-short-url.dto';
 import { Response } from 'express';
@@ -21,5 +29,10 @@ export class ShortUrlController {
   @Get('admin/:alias')
   getDetails(@Param('alias') alias: string) {
     return this.shortUrlService.getDetails(alias);
+  }
+
+  @Delete('admin/:alias')
+  async delete(@Param('alias') alias: string) {
+    return this.shortUrlService.delete(alias);
   }
 }

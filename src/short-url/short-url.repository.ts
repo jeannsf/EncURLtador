@@ -48,4 +48,13 @@ export class ShortUrlRepository {
     });
     return urlDetails;
   }
+
+  async delete(alias: string) {
+    const urlDelete = await this.prismaService.shortLink.delete({
+      where: {
+        alias,
+      },
+    });
+    return urlDelete;
+  }
 }
