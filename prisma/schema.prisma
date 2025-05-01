@@ -14,4 +14,23 @@ model ShortLink {
   createdAt   DateTime @default(now())
   expiresAt   DateTime?
   visitCount  Int      @default(0)
+  userId      String
+  user        User     @relation(fields: [userId], references: [id])
 }
+
+model User {
+  id        String    @id @default(uuid())
+  email     String    @unique
+  password  String
+  firstName String
+  lastName  String
+  role      UserRole  @default(USER)
+  createdAt DateTime  @default(now())
+  links     ShortLink[]
+}
+
+enum UserRole {
+  ADMIN
+  USER
+}
+
