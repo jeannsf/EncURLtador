@@ -13,6 +13,9 @@ export class ShortUrlRepository {
         originalUrl,
         alias,
         expiresAt,
+        user: {
+          connect: { id: createShortUrlDto.userId },
+        },
       },
     });
     return shortUrl;
