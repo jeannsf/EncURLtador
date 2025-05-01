@@ -1,1 +1,5 @@
-export class CreateShortUrlDto {}
+export class CreateShortUrlDto {
+  originalUrl: string;
+  alias: string;
+  expiresAt: Date;
+}
