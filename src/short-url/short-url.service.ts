@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { CreateShortUrlDto } from './dto/create-short-url.dto';
 import { ShortUrlRepository } from './short-url.repository';
 
@@ -8,5 +8,14 @@ export class ShortUrlService {
 
   create(createShortUrlDto: CreateShortUrlDto) {
     return this.shortUrlRepository.create(createShortUrlDto);
+  }
+
+  async redirect(alias: string) {
+    const url = await this.shortUrlRepository.getShortUrl(alias);
+    if (!url) {
+      throw new NotFoundException('URL not found');
+    }
+    await this.shortUrlRepository.incrementVisit(alias);
+    return url;
   }
 }

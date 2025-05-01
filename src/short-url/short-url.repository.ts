@@ -17,4 +17,26 @@ export class ShortUrlRepository {
     });
     return shortUrl;
   }
+
+  async getShortUrl(alias: string) {
+    const shortUrl = await this.prismaService.shortLink.findUnique({
+      where: {
+        alias,
+      },
+    });
+    return shortUrl?.originalUrl;
+  }
+
+  async incrementVisit(alias: string) {
+    await this.prismaService.shortLink.update({
+      where: {
+        alias,
+      },
+      data: {
+        visitCount: {
+          increment: 1,
+        },
+      },
+    });
+  }
 }
