@@ -17,4 +17,9 @@ export class ShortUrlController {
     const url = await this.shortUrlService.redirect(alias);
     return res.redirect(url);
   }
+
+  @Get('admin/:alias')
+  getDetails(@Param('alias') alias: string) {
+    return this.shortUrlService.getDetails(alias);
+  }
 }

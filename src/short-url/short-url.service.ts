@@ -18,4 +18,12 @@ export class ShortUrlService {
     await this.shortUrlRepository.incrementVisit(alias);
     return url;
   }
+
+  async getDetails(alias: string) {
+    const urlDetails = await this.shortUrlRepository.getDetails(alias);
+    if (!urlDetails) {
+      throw new NotFoundException('URL not found');
+    }
+    return urlDetails;
+  }
 }

@@ -39,4 +39,13 @@ export class ShortUrlRepository {
       },
     });
   }
+
+  async getDetails(alias: string) {
+    const urlDetails = await this.prismaService.shortLink.findUnique({
+      where: {
+        alias,
+      },
+    });
+    return urlDetails;
+  }
 }
