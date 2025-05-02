@@ -6,9 +6,10 @@ import { PrismaModule } from 'prisma/prisma.module';
 import { UsersController } from 'src/users/users.controller';
 import { UserRepository } from 'src/users/user.repository';
 import { UsersService } from 'src/users/users.service';
+import { AuthModule } from 'src/auth/auth.module';
 
 @Module({
-  imports: [PrismaModule],
+  imports: [PrismaModule, AuthModule],
   controllers: [ShortUrlController, UsersController],
   providers: [
     ShortUrlService,
