@@ -44,8 +44,13 @@ export class ShortUrlController {
   }
 
   @Get('admin/:alias')
-  getDetails(@Param('alias') alias: string) {
-    return this.shortUrlService.getDetails(alias);
+  @UseGuards(JwtAuthGuard)
+  getDetails(
+    @Param('alias') alias: string,
+    @Request() req: { user: { id: string } },
+  ) {
+    const userId = req.user.id;
+    return this.shortUrlService.getDetailsAsAdmin(alias, userId);
   }
 
   @Delete('admin/:alias')

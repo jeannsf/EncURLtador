@@ -1,10 +1,18 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import {
+  ForbiddenException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { CreateShortUrlDto } from './dto/create-short-url.dto';
 import { ShortUrlRepository } from './short-url.repository';
+import { UserRepository } from 'src/users/user.repository';
 
 @Injectable()
 export class ShortUrlService {
-  constructor(readonly shortUrlRepository: ShortUrlRepository) {}
+  constructor(
+    private readonly shortUrlRepository: ShortUrlRepository,
+    private readonly userRepository: UserRepository,
+  ) {}
 
   create(createShortUrlDto: CreateShortUrlDto) {
     return this.shortUrlRepository.create(createShortUrlDto);
@@ -22,7 +30,13 @@ export class ShortUrlService {
     return url;
   }
 
-  async getDetails(alias: string) {
+  async getDetailsAsAdmin(alias: string, userId: string) {
+    const role = await this.userRepository.getUserRole(userId);
+
+    if (role !== 'ADMIN') {
+      throw new ForbiddenException('Access allowed only for administrators');
+    }
+
     const urlDetails = await this.shortUrlRepository.getDetails(alias);
     if (!urlDetails) {
       throw new NotFoundException('URL not found');

@@ -25,4 +25,13 @@ export class UserRepository {
     });
     return user;
   }
+
+  async getUserRole(userId: string) {
+    const user = await this.prismaService.user.findUnique({
+      where: { id: userId },
+      select: { role: true },
+    });
+
+    return user?.role ?? null;
+  }
 }
