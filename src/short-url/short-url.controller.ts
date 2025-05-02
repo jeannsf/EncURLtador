@@ -32,8 +32,14 @@ export class ShortUrlController {
   }
 
   @Get(':alias')
-  async redirect(@Param('alias') alias: string, @Res() res: Response) {
-    const url = await this.shortUrlService.redirect(alias);
+  @UseGuards(JwtAuthGuard)
+  async redirect(
+    @Param('alias') alias: string,
+    @Request() req: { user: { id: string } },
+    @Res() res: Response,
+  ) {
+    const userId = req.user.id;
+    const url = await this.shortUrlService.redirect(alias, userId);
     return res.redirect(url);
   }
 

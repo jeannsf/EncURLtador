@@ -10,8 +10,11 @@ export class ShortUrlService {
     return this.shortUrlRepository.create(createShortUrlDto);
   }
 
-  async redirect(alias: string) {
-    const url = await this.shortUrlRepository.getShortUrl(alias);
+  async redirect(alias: string, userId: string) {
+    const url = await this.shortUrlRepository.getShortUrlByAliasAndUser(
+      alias,
+      userId,
+    );
     if (!url) {
       throw new NotFoundException('URL not found');
     }

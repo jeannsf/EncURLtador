@@ -60,4 +60,15 @@ export class ShortUrlRepository {
     });
     return urlDelete;
   }
+
+  async getShortUrlByAliasAndUser(alias: string, userId: string) {
+    const urlShort = await this.prismaService.shortLink.findFirst({
+      where: {
+        alias,
+        userId,
+      },
+    });
+
+    return urlShort?.originalUrl;
+  }
 }
