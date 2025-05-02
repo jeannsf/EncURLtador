@@ -1,98 +1,261 @@
-<p align="center">
-  <a href="http://nestjs.com/" target="blank"><img src="https://nestjs.com/img/logo-small.svg" width="120" alt="Nest Logo" /></a>
-</p>
+# 🔗 EncURLtador – API de Encurtamento de Links
 
-[circleci-image]: https://img.shields.io/circleci/build/github/nestjs/nest/master?token=abc123def456
-[circleci-url]: https://circleci.com/gh/nestjs/nest
+API RESTful para encurtamento de URLs com autenticação JWT e controle de permissões. Usuários podem criar links curtos personalizados, visualizar estatísticas e, caso sejam administradores, acessar detalhes avançados e deletar URLs.
 
-  <p align="center">A progressive <a href="http://nodejs.org" target="_blank">Node.js</a> framework for building efficient and scalable server-side applications.</p>
-    <p align="center">
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/v/@nestjs/core.svg" alt="NPM Version" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/l/@nestjs/core.svg" alt="Package License" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/dm/@nestjs/common.svg" alt="NPM Downloads" /></a>
-<a href="https://circleci.com/gh/nestjs/nest" target="_blank"><img src="https://img.shields.io/circleci/build/github/nestjs/nest/master" alt="CircleCI" /></a>
-<a href="https://discord.gg/G7Qnnhy" target="_blank"><img src="https://img.shields.io/badge/discord-online-brightgreen.svg" alt="Discord"/></a>
-<a href="https://opencollective.com/nest#backer" target="_blank"><img src="https://opencollective.com/nest/backers/badge.svg" alt="Backers on Open Collective" /></a>
-<a href="https://opencollective.com/nest#sponsor" target="_blank"><img src="https://opencollective.com/nest/sponsors/badge.svg" alt="Sponsors on Open Collective" /></a>
-  <a href="https://paypal.me/kamilmysliwiec" target="_blank"><img src="https://img.shields.io/badge/Donate-PayPal-ff3f59.svg" alt="Donate us"/></a>
-    <a href="https://opencollective.com/nest#sponsor"  target="_blank"><img src="https://img.shields.io/badge/Support%20us-Open%20Collective-41B883.svg" alt="Support us"></a>
-  <a href="https://twitter.com/nestframework" target="_blank"><img src="https://img.shields.io/twitter/follow/nestframework.svg?style=social&label=Follow" alt="Follow us on Twitter"></a>
-</p>
-  <!--[![Backers on Open Collective](https://opencollective.com/nest/backers/badge.svg)](https://opencollective.com/nest#backer)
-  [![Sponsors on Open Collective](https://opencollective.com/nest/sponsors/badge.svg)](https://opencollective.com/nest#sponsor)-->
+---
 
-## Description
+## 🧱 Stack Utilizada
 
-[Nest](https://github.com/nestjs/nest) framework TypeScript starter repository.
+- **NestJS** – Framework backend
+- **Prisma ORM** – ORM para acesso ao banco de dados
+- **JWT** – Autenticação baseada em tokens
+- **bcrypt** – Hash de senhas
+- **PostgreSQL** – Banco de dados relacional
 
-## Project setup
+---
 
-```bash
-$ npm install
+## ⚙️ Funcionalidades
+
+| Rota                         | Método | Autenticado | Papel | Descrição                                         |
+|-----------------------------|--------|-------------|-------|---------------------------------------------------|
+| `/auth/login`               | POST   | ❌          | -     | Autentica o usuário e retorna um token JWT        |
+| `/users`                    | POST   | ❌          | -     | Criação de novo usuário                           |
+| `/shortUrl`                 | POST   | ✅          | USER  | Cria nova URL encurtada                           |
+| `/shortUrl/:alias`          | GET    | ✅          | USER  | Redireciona para a URL original                   |
+| `/shortUrl/admin/:alias`    | GET    | ✅          | ADMIN | Retorna detalhes da URL encurtada                 |
+| `/shortUrl/admin/:alias`    | DELETE | ❌          | ADMIN | Deleta uma URL encurtada                          |
+
+---
+
+## 🔐 Autenticação
+
+Utilize o endpoint abaixo para realizar o login:
+
+```
+POST /auth/login
 ```
 
-## Compile and run the project
-
-```bash
-# development
-$ npm run start
-
-# watch mode
-$ npm run start:dev
-
-# production mode
-$ npm run start:prod
+**Body:**
+```json
+{
+  "email": "usuario@example.com",
+  "password": "senha123"
+}
 ```
 
-## Run tests
-
-```bash
-# unit tests
-$ npm run test
-
-# e2e tests
-$ npm run test:e2e
-
-# test coverage
-$ npm run test:cov
+**Resposta:**
+```json
+{
+  "access_token": "eyJhbGciOiJIUzI1NiIs..."
+}
 ```
 
-## Deployment
-
-When you're ready to deploy your NestJS application to production, there are some key steps you can take to ensure it runs as efficiently as possible. Check out the [deployment documentation](https://docs.nestjs.com/deployment) for more information.
-
-If you are looking for a cloud-based platform to deploy your NestJS application, check out [Mau](https://mau.nestjs.com), our official platform for deploying NestJS applications on AWS. Mau makes deployment straightforward and fast, requiring just a few simple steps:
-
-```bash
-$ npm install -g @nestjs/mau
-$ mau deploy
+**Cabeçalho nas rotas protegidas:**
+```
+Authorization: Bearer <access_token>
 ```
 
-With Mau, you can deploy your application in just a few clicks, allowing you to focus on building features rather than managing infrastructure.
+---
 
-## Resources
+## 📥 Criação de usuário
 
-Check out a few resources that may come in handy when working with NestJS:
+```
+POST /users
+```
 
-- Visit the [NestJS Documentation](https://docs.nestjs.com) to learn more about the framework.
-- For questions and support, please visit our [Discord channel](https://discord.gg/G7Qnnhy).
-- To dive deeper and get more hands-on experience, check out our official video [courses](https://courses.nestjs.com/).
-- Deploy your application to AWS with the help of [NestJS Mau](https://mau.nestjs.com) in just a few clicks.
-- Visualize your application graph and interact with the NestJS application in real-time using [NestJS Devtools](https://devtools.nestjs.com).
-- Need help with your project (part-time to full-time)? Check out our official [enterprise support](https://enterprise.nestjs.com).
-- To stay in the loop and get updates, follow us on [X](https://x.com/nestframework) and [LinkedIn](https://linkedin.com/company/nestjs).
-- Looking for a job, or have a job to offer? Check out our official [Jobs board](https://jobs.nestjs.com).
+**Body:**
+```json
+{
+  "email": "usuario@example.com",
+  "password": "senha123",
+  "firstName": "João",
+  "lastName": "Silva"
+}
+```
 
-## Support
+---
 
-Nest is an MIT-licensed open source project. It can grow thanks to the sponsors and support by the amazing backers. If you'd like to join them, please [read more here](https://docs.nestjs.com/support).
+## 🔗 Criar URL encurtada
 
-## Stay in touch
+```
+POST /shortUrl
+Authorization: Bearer <token>
+```
 
-- Author - [Kamil Myśliwiec](https://twitter.com/kammysliwiec)
-- Website - [https://nestjs.com](https://nestjs.com/)
-- Twitter - [@nestframework](https://twitter.com/nestframework)
+**Body:**
+```json
+{
+  "originalUrl": "https://www.exemplo.com/artigo",
+  "alias": "meuartigo"
+}
+```
 
-## License
+**Resposta:**
+```json
+{
+  "id": "uuid",
+  "originalUrl": "https://www.exemplo.com/artigo",
+  "alias": "meuartigo",
+  "visitCount": 0,
+  "userId": "uuid"
+}
+```
 
-Nest is [MIT licensed](https://github.com/nestjs/nest/blob/master/LICENSE).
+---
+
+## ↪️ Redirecionar URL
+
+```
+GET /shortUrl/:alias
+Authorization: Bearer <token>
+```
+
+Redireciona o usuário para a URL original e incrementa o contador de visitas.
+
+---
+
+## 📊 Detalhes da URL (ADMIN)
+
+```
+GET /shortUrl/admin/:alias
+Authorization: Bearer <token>
+```
+
+Retorna detalhes da URL encurtada. **Requer papel ADMIN.**
+
+---
+
+## 🗑️ Deletar URL (ADMIN)
+
+```
+DELETE /shortUrl/admin/:alias
+```
+
+Remove a URL encurtada do sistema. **Apenas administradores.**
+
+---
+
+## 👥 Permissões por papel
+
+| Papel | Acesso                                                                 |
+|-------|------------------------------------------------------------------------|
+| USER  | Criar URLs, redirecionar e acessar seus próprios dados                 |
+| ADMIN | Tudo acima + acessar detalhes e deletar URLs de qualquer usuário       |
+
+---
+
+## 🧠 Lógica Interna
+
+### Login
+- Valida o e-mail e senha
+- Gera um JWT com `sub`, `email` e `role`
+
+### Criação de URL
+- Valida alias único
+- Associa com o `userId`
+
+### Redirecionamento
+- Verifica o dono da URL
+- Incrementa `visitCount`
+
+### Detalhes e exclusão
+- Acesso restrito para ADMIN
+
+---
+
+## 🧾 Modelos Prisma
+
+### `User`
+```prisma
+model User {
+  id        String    @id @default(uuid())
+  email     String    @unique
+  password  String
+  firstName String
+  lastName  String
+  role      UserRole  @default(USER)
+  createdAt DateTime  @default(now())
+  links     ShortLink[]
+}
+```
+
+### `ShortLink`
+```prisma
+model ShortLink {
+  id          String   @id @default(uuid())
+  originalUrl String   @db.Text
+  alias       String   @unique
+  createdAt   DateTime @default(now())
+  expiresAt   DateTime?
+  visitCount  Int      @default(0)
+  userId      String
+  user        User     @relation(fields: [userId], references: [id])
+}
+```
+
+### `UserRole`
+```prisma
+enum UserRole {
+  ADMIN
+  USER
+}
+```
+
+---
+
+## 🚀 Como rodar localmente
+
+```bash
+# Clonar o repositório
+git clone https://github.com/jeannsf/urlShortener.git
+cd nome-do-repo
+
+# Instalar dependências
+npm install
+
+# Copiar env de exemplo
+cp .env.example .env
+
+# Rodar as migrations
+npx prisma migrate dev
+
+# Iniciar servidor
+npm run start:dev
+```
+
+---
+
+## 📂 Estrutura de Diretórios
+
+```
+src/
+│
+├── auth/
+│   ├── auth.controller.ts
+│   ├── auth.module.ts
+│   ├── auth.service.ts
+│   ├── jwt-auth.guard.ts
+│   ├── jwt.strategy.ts
+│   ├── dto/
+│   │   └── login.dto.ts
+│
+├── users/
+│   ├── users.controller.ts
+│   ├── users.controller.spec.ts
+│   ├── users.service.spec.ts
+│   ├── users.module.ts
+│   ├── users.repository.ts
+│   ├── users.service.ts
+│   ├── dto/
+│   │   └── create-user.dto.ts
+│
+├── short-url/
+│   ├── short-url.controller.ts
+│   ├── short-url.repository.ts
+│   ├── short-url.service.ts
+│   ├── short-url.controller.spec.ts
+│   ├── short-url.service.spec.ts
+│   ├── dto/
+│   │   ├── create-short-url.dto.ts
+│   │   └── update-short-url.dto.ts
+```
