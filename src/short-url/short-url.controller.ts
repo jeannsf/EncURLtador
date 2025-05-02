@@ -6,18 +6,29 @@ import {
   Res,
   Param,
   Delete,
+  UseGuards,
 } from '@nestjs/common';
 import { ShortUrlService } from './short-url.service';
 import { CreateShortUrlDto } from './dto/create-short-url.dto';
 import { Response } from 'express';
+import { Request } from '@nestjs/common';
+import { JwtAuthGuard } from 'src/auth/jwt-auth.guard';
 
 @Controller('shortUrl')
 export class ShortUrlController {
   constructor(private readonly shortUrlService: ShortUrlService) {}
 
   @Post()
-  async create(@Body() createShortUrlDto: CreateShortUrlDto) {
-    return this.shortUrlService.create(createShortUrlDto);
+  @UseGuards(JwtAuthGuard)
+  async create(
+    @Body() createShortUrlDto: CreateShortUrlDto,
+    @Request() req: { user: { id: string } },
+  ) {
+    const userId: string = req.user.id;
+    return this.shortUrlService.create({
+      ...createShortUrlDto,
+      userId,
+    });
   }
 
   @Get(':alias')
